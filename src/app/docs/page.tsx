@@ -82,6 +82,18 @@ export default async function DocsPage() {
               </Link>
             </li>
             <li>
+              <span className="text-white">Admin home:</span>{" "}
+              <Link href="/admin" className="text-[var(--gold)]">
+                /admin
+              </Link>
+            </li>
+            <li>
+              <span className="text-white">Admin mock (alt):</span>{" "}
+              <Link href="/admin/mock-alpha" className="text-[var(--gold)]">
+                /admin/mock-alpha
+              </Link>
+            </li>
+            <li>
               <span className="text-white">Admin routing update:</span>{" "}
               <Link href="/admin/routing" className="text-[var(--gold)]">
                 /admin/routing
@@ -91,6 +103,24 @@ export default async function DocsPage() {
               <span className="text-white">Admin allocation record:</span>{" "}
               <Link href="/admin/allocations" className="text-[var(--gold)]">
                 /admin/allocations
+              </Link>
+            </li>
+            <li>
+              <span className="text-white">Company dashboards:</span>{" "}
+              <Link href="/company" className="text-[var(--gold)]">
+                /company
+              </Link>
+            </li>
+            <li>
+              <span className="text-white">Staking suite:</span>{" "}
+              <Link href="/staking" className="text-[var(--gold)]">
+                /staking
+              </Link>
+            </li>
+            <li>
+              <span className="text-white">User dashboard:</span>{" "}
+              <Link href="/user" className="text-[var(--gold)]">
+                /user
               </Link>
             </li>
             <li>

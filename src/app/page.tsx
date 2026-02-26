@@ -41,8 +41,12 @@ export default async function Home() {
         <Link href="/" className="display text-2xl text-[var(--gold-soft)]">
           TokenChain
         </Link>
-        <nav className="hidden gap-6 text-sm text-[var(--muted)] md:flex">
+        <nav className="hidden gap-6 text-sm text-[var(--muted)] xl:flex">
           <Link href="/businesses">For Businesses</Link>
+          <Link href="/company">Company</Link>
+          <Link href="/staking">Staking</Link>
+          <Link href="/user">User</Link>
+          <Link href="/admin">Admin</Link>
           <Link href="/docs">Docs</Link>
           <Link href={links.explorer} target="_blank" rel="noreferrer">
             Explorer
@@ -258,6 +262,33 @@ export default async function Home() {
               <p className="mt-2 text-sm text-[var(--muted)]">{body}</p>
             </article>
           ))}
+        </section>
+
+        <section className="mt-10 rounded-3xl border border-[var(--line)] bg-[var(--panel)]/70 p-8">
+          <h2 className="display text-3xl text-[var(--gold-soft)]">Build-Mode Panels</h2>
+          <p className="mt-2 text-sm text-[var(--muted)]">
+            New additive UI surfaces for operator, company, staking, and user flows.
+          </p>
+          <div className="mt-4 grid gap-3 md:grid-cols-3">
+            <Link href="/admin" className="rounded-xl border border-[var(--line)] bg-black/20 p-4 text-sm hover:border-[var(--gold)]/40">
+              Admin Hub
+            </Link>
+            <Link href="/admin/mock-alpha" className="rounded-xl border border-[var(--line)] bg-black/20 p-4 text-sm hover:border-[var(--gold)]/40">
+              Admin Mock (Alt)
+            </Link>
+            <Link href="/company" className="rounded-xl border border-[var(--line)] bg-black/20 p-4 text-sm hover:border-[var(--gold)]/40">
+              Company Dashboards
+            </Link>
+            <Link href="/staking" className="rounded-xl border border-[var(--line)] bg-black/20 p-4 text-sm hover:border-[var(--gold)]/40">
+              Staking Suite
+            </Link>
+            <Link href="/user" className="rounded-xl border border-[var(--line)] bg-black/20 p-4 text-sm hover:border-[var(--gold)]/40">
+              User Dashboard
+            </Link>
+            <Link href="/docs" className="rounded-xl border border-[var(--line)] bg-black/20 p-4 text-sm hover:border-[var(--gold)]/40">
+              Technical Docs
+            </Link>
+          </div>
         </section>
 
         <footer className="mt-12 rounded-2xl border border-[var(--line)] bg-[var(--panel)]/70 p-5 text-sm text-[var(--muted)]">
