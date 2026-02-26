@@ -45,6 +45,24 @@ export default function DocsPage() {
         </article>
 
         <article className="rounded-2xl border border-[var(--line)] bg-[var(--panel)]/70 p-5">
+          <p className="text-sm uppercase tracking-[0.12em] text-[var(--muted)]">Indexer APIs</p>
+          <ul className="mt-3 space-y-2 text-sm">
+            <li>
+              <span className="text-white">Network status:</span>{" "}
+              <Link href="https://api.testnet.tokenchain.tokentap.ca/v1/status" target="_blank" rel="noreferrer" className="text-[var(--gold)]">
+                /v1/status
+              </Link>
+            </li>
+            <li>
+              <span className="text-white">Merchant routing:</span>{" "}
+              <Link href="https://api.testnet.tokenchain.tokentap.ca/v1/loyalty/merchant-routing" target="_blank" rel="noreferrer" className="text-[var(--gold)]">
+                /v1/loyalty/merchant-routing
+              </Link>
+            </li>
+          </ul>
+        </article>
+
+        <article className="rounded-2xl border border-[var(--line)] bg-[var(--panel)]/70 p-5">
           <p className="text-sm uppercase tracking-[0.12em] text-[var(--muted)]">Faucet Request</p>
           <pre className="mt-3 overflow-x-auto rounded-xl border border-[var(--line)] bg-black/30 p-3 text-xs text-[var(--gold)]">
 {`curl -X POST https://faucet.testnet.tokenchain.tokentap.ca/v1/faucet/request \\

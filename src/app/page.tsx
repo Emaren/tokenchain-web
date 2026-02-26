@@ -1,9 +1,10 @@
 import Link from "next/link";
+import { API_BASE, getLiveStatus, getMerchantRouting } from "@/lib/tokenchain-api";
 
 const links = {
   wallet: "https://tokentap.ca",
   explorer: "https://explorer.tokenchain.tokentap.ca",
-  api: "https://api.testnet.tokenchain.tokentap.ca",
+  api: API_BASE,
   faucet: "https://faucet.testnet.tokenchain.tokentap.ca",
 } as const;
 
@@ -14,25 +15,9 @@ const tokens = [
   ["grain", "$GRAIN", "Community wealth rail"],
 ] as const;
 
-type LiveStatus = {
-  ok: boolean;
-  latest_block_height: string;
-  catching_up: boolean;
-  rpc_network: string;
-};
-
-async function getLiveStatus(): Promise<LiveStatus | null> {
-  try {
-    const res = await fetch(`${links.api}/v1/status`, { cache: "no-store" });
-    if (!res.ok) return null;
-    return (await res.json()) as LiveStatus;
-  } catch {
-    return null;
-  }
-}
-
 export default async function Home() {
   const live = await getLiveStatus();
+  const routing = await getMerchantRouting(4);
   const stats = [
     ["Network", live?.rpc_network ?? "tokenchain-testnet-1"],
     ["Height", live?.latest_block_height ?? "n/a"],
@@ -109,6 +94,46 @@ export default async function Home() {
               <p className="mt-2 text-sm font-semibold text-white">{v}</p>
             </article>
           ))}
+        </section>
+
+        <section className="mt-10 rounded-3xl border border-[var(--line)] bg-[var(--panel)]/70 p-8">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <h2 className="display text-3xl text-[var(--gold-soft)]">Merchant Incentive Routing</h2>
+              <p className="mt-2 text-sm text-[var(--muted)]">
+                Live per-token Bucket C split between stakers and merchant treasury.
+              </p>
+            </div>
+            <Link
+              href={`${links.api}/v1/loyalty/merchant-routing`}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-xl border border-[var(--line)] bg-black/20 px-3 py-2 text-xs text-[var(--muted)]"
+            >
+              Raw API
+            </Link>
+          </div>
+
+          {routing.length > 0 ? (
+            <div className="mt-5 grid gap-4 md:grid-cols-2">
+              {routing.map((item) => (
+                <article key={item.denom} className="rounded-2xl border border-[var(--line)] bg-black/20 p-5">
+                  <p className="text-lg font-semibold text-[var(--gold)]">
+                    {item.symbol || item.name || item.denom}
+                  </p>
+                  <p className="mt-1 text-xs text-[var(--muted)] break-all">{item.denom}</p>
+                  <p className="mt-3 text-sm text-white">
+                    Stakers: <strong>{item.merchant_incentive_stakers_pct}</strong>
+                  </p>
+                  <p className="mt-1 text-sm text-white">
+                    Treasury: <strong>{item.merchant_incentive_treasury_pct}</strong>
+                  </p>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <p className="mt-5 text-sm text-[var(--muted)]">Routing feed is temporarily unavailable.</p>
+          )}
         </section>
 
         <section className="mt-10 rounded-3xl border border-[var(--line)] bg-[var(--panel)]/70 p-8">
