@@ -29,6 +29,11 @@ export default async function AdminRoutingPage() {
             Go to allocation console
           </Link>
         </p>
+        <p className="mt-2">
+          <Link href="/admin/daily-allocation" className="text-[var(--gold)]">
+            Go to daily allocation runner
+          </Link>
+        </p>
       </div>
     </main>
   );

@@ -77,6 +77,12 @@ export default function DocsPage() {
                 /admin/allocations
               </Link>
             </li>
+            <li>
+              <span className="text-white">Admin daily allocation batch:</span>{" "}
+              <Link href="/admin/daily-allocation" className="text-[var(--gold)]">
+                /admin/daily-allocation
+              </Link>
+            </li>
           </ul>
         </article>
 
