@@ -1,11 +1,12 @@
 import Link from "next/link";
 
 const endpoints = [
-  ["Explorer", "https://explorer.tokenchain.tokentap.ca"],
-  ["RPC", "https://rpc.tokenchain.tokentap.ca"],
-  ["REST", "https://rest.tokenchain.tokentap.ca"],
-  ["gRPC", "grpc.tokenchain.tokentap.ca:9090"],
-  ["API", "https://api.tokenchain.tokentap.ca"],
+  ["Explorer (bootstrap)", "https://explorer.testnet.tokenchain.tokentap.ca"],
+  ["RPC", "https://rpc.testnet.tokenchain.tokentap.ca"],
+  ["REST", "https://rest.testnet.tokenchain.tokentap.ca"],
+  ["gRPC", "grpc.testnet.tokenchain.tokentap.ca:443"],
+  ["API", "https://api.testnet.tokenchain.tokentap.ca"],
+  ["Seed", "seed.testnet.tokenchain.tokentap.ca:26656"],
 ];
 
 export default function DocsPage() {

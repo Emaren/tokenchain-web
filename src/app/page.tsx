@@ -9,7 +9,7 @@ const links = {
 const stats = [
   ["Network", "tokenchain-testnet-1"],
   ["Base Denom", "utoken (TOKEN)"],
-  ["Explorer", "Ping.pub"],
+  ["Explorer", "Bootstrap Host"],
   ["Ops", "IBC + CosmWasm"],
 ] as const;
 

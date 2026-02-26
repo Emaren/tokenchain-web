@@ -53,7 +53,7 @@ export default async function TokenPage({
         <p className="text-sm uppercase tracking-[0.12em] text-[var(--muted)]">Explorer</p>
         <p className="mt-2 text-sm">
           <Link
-            href="https://explorer.tokenchain.tokentap.ca"
+            href="https://explorer.testnet.tokenchain.tokentap.ca"
             target="_blank"
             rel="noreferrer"
             className="text-[var(--gold)]"
