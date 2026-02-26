@@ -12,6 +12,9 @@ type RequestBody = {
   total_bucket_c_amount?: number;
   allow_overwrite?: boolean;
   dry_run?: boolean;
+  auto_from_verified_tokens?: boolean;
+  min_activity_score?: number;
+  max_auto_tokens?: number;
   items?: ScoreItem[];
 };
 
@@ -28,6 +31,9 @@ export async function POST(req: NextRequest) {
   const totalBucketCAmount = Number(body.total_bucket_c_amount);
   const allowOverwrite = Boolean(body.allow_overwrite);
   const dryRun = Boolean(body.dry_run);
+  const autoFromVerifiedTokens = Boolean(body.auto_from_verified_tokens);
+  const minActivityScore = Number(body.min_activity_score ?? 1);
+  const maxAutoTokens = Number(body.max_auto_tokens ?? 200);
   const items = Array.isArray(body.items) ? body.items : [];
 
   if (!token) {
@@ -36,8 +42,14 @@ export async function POST(req: NextRequest) {
   if (!Number.isFinite(totalBucketCAmount) || totalBucketCAmount <= 0) {
     return NextResponse.json({ ok: false, error: "invalid_total_bucket_c_amount" }, { status: 400 });
   }
-  if (items.length === 0) {
+  if (!autoFromVerifiedTokens && items.length === 0) {
     return NextResponse.json({ ok: false, error: "items_required" }, { status: 400 });
+  }
+  if (!Number.isFinite(minActivityScore) || minActivityScore <= 0) {
+    return NextResponse.json({ ok: false, error: "invalid_min_activity_score" }, { status: 400 });
+  }
+  if (!Number.isFinite(maxAutoTokens) || maxAutoTokens <= 0) {
+    return NextResponse.json({ ok: false, error: "invalid_max_auto_tokens" }, { status: 400 });
   }
 
   const normalizedItems = items
@@ -51,7 +63,7 @@ export async function POST(req: NextRequest) {
       activity_score: Math.trunc(item.activity_score),
     }));
 
-  if (normalizedItems.length === 0) {
+  if (!autoFromVerifiedTokens && normalizedItems.length === 0) {
     return NextResponse.json({ ok: false, error: "invalid_items" }, { status: 400 });
   }
 
@@ -66,7 +78,10 @@ export async function POST(req: NextRequest) {
       total_bucket_c_amount: Math.trunc(totalBucketCAmount),
       allow_overwrite: allowOverwrite,
       dry_run: dryRun,
-      items: normalizedItems,
+      auto_from_verified_tokens: autoFromVerifiedTokens,
+      min_activity_score: Math.trunc(minActivityScore),
+      max_auto_tokens: Math.trunc(maxAutoTokens),
+      items: autoFromVerifiedTokens ? [] : normalizedItems,
     }),
     cache: "no-store",
   });

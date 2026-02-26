@@ -12,13 +12,15 @@ type SubmitResult = {
   error?: string;
   detail?: string;
   submitted_count?: number;
-  tx_hash?: string;
 };
 
 export default function DailyAllocationRunForm({ routingItems }: Props) {
   const [token, setToken] = useState("");
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
   const [totalBucketCAmount, setTotalBucketCAmount] = useState(20000);
+  const [autoFromVerifiedTokens, setAutoFromVerifiedTokens] = useState(true);
+  const [minActivityScore, setMinActivityScore] = useState(1);
+  const [maxAutoTokens, setMaxAutoTokens] = useState(200);
   const [dryRun, setDryRun] = useState(true);
   const [allowOverwrite, setAllowOverwrite] = useState(false);
   const [itemsJson, setItemsJson] = useState(() =>
@@ -44,7 +46,13 @@ export default function DailyAllocationRunForm({ routingItems }: Props) {
     }
   }, [itemsJson]);
 
-  const valid = !!token && !!date && totalBucketCAmount > 0 && parsedItems && parsedItems.length > 0;
+  const validManual = !!parsedItems && parsedItems.length > 0;
+  const validAuto = minActivityScore > 0 && maxAutoTokens > 0;
+  const valid =
+    !!token &&
+    !!date &&
+    totalBucketCAmount > 0 &&
+    (autoFromVerifiedTokens ? validAuto : validManual);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -60,9 +68,12 @@ export default function DailyAllocationRunForm({ routingItems }: Props) {
           token,
           date,
           total_bucket_c_amount: totalBucketCAmount,
+          auto_from_verified_tokens: autoFromVerifiedTokens,
+          min_activity_score: minActivityScore,
+          max_auto_tokens: maxAutoTokens,
           allow_overwrite: allowOverwrite,
           dry_run: dryRun,
-          items: parsedItems,
+          items: autoFromVerifiedTokens ? [] : parsedItems,
         }),
       });
       const body = (await res.json()) as SubmitResult;
@@ -104,16 +115,15 @@ export default function DailyAllocationRunForm({ routingItems }: Props) {
           </label>
         </div>
 
-        <label className="block text-sm">
-          <span className="text-[var(--muted)]">Items JSON (`denom` + `activity_score`)</span>
-          <textarea
-            className="mt-1 h-52 w-full rounded-lg border border-[var(--line)] bg-black/20 px-3 py-2 font-mono text-xs text-white"
-            value={itemsJson}
-            onChange={(e) => setItemsJson(e.target.value)}
-          />
-        </label>
-
         <div className="flex flex-wrap items-center gap-4 text-sm text-[var(--muted)]">
+          <label className="inline-flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={autoFromVerifiedTokens}
+              onChange={(e) => setAutoFromVerifiedTokens(e.target.checked)}
+            />
+            Auto score from verified tokens
+          </label>
           <label className="inline-flex items-center gap-2">
             <input type="checkbox" checked={dryRun} onChange={(e) => setDryRun(e.target.checked)} />
             Dry run
@@ -128,6 +138,40 @@ export default function DailyAllocationRunForm({ routingItems }: Props) {
           </label>
         </div>
 
+        {autoFromVerifiedTokens ? (
+          <div className="grid gap-4 md:grid-cols-2">
+            <label className="block text-sm">
+              <span className="text-[var(--muted)]">Min Activity Score</span>
+              <input
+                className="mt-1 w-full rounded-lg border border-[var(--line)] bg-black/20 px-3 py-2 text-white"
+                type="number"
+                min={1}
+                value={minActivityScore}
+                onChange={(e) => setMinActivityScore(Number(e.target.value))}
+              />
+            </label>
+            <label className="block text-sm">
+              <span className="text-[var(--muted)]">Max Auto Tokens</span>
+              <input
+                className="mt-1 w-full rounded-lg border border-[var(--line)] bg-black/20 px-3 py-2 text-white"
+                type="number"
+                min={1}
+                value={maxAutoTokens}
+                onChange={(e) => setMaxAutoTokens(Number(e.target.value))}
+              />
+            </label>
+          </div>
+        ) : (
+          <label className="block text-sm">
+            <span className="text-[var(--muted)]">Items JSON (`denom` + `activity_score`)</span>
+            <textarea
+              className="mt-1 h-52 w-full rounded-lg border border-[var(--line)] bg-black/20 px-3 py-2 font-mono text-xs text-white"
+              value={itemsJson}
+              onChange={(e) => setItemsJson(e.target.value)}
+            />
+          </label>
+        )}
+
         <label className="block text-sm">
           <span className="text-[var(--muted)]">Admin API Token</span>
           <input
@@ -139,7 +183,9 @@ export default function DailyAllocationRunForm({ routingItems }: Props) {
           />
         </label>
 
-        {!parsedItems && <p className="text-sm text-red-300">Items JSON is invalid.</p>}
+        {!autoFromVerifiedTokens && !parsedItems && (
+          <p className="text-sm text-red-300">Items JSON is invalid.</p>
+        )}
 
         <button
           type="submit"
