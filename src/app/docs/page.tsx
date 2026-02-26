@@ -59,6 +59,12 @@ export default function DocsPage() {
                 /v1/loyalty/merchant-routing
               </Link>
             </li>
+            <li>
+              <span className="text-white">Admin routing update:</span>{" "}
+              <Link href="/admin/routing" className="text-[var(--gold)]">
+                /admin/routing
+              </Link>
+            </li>
           </ul>
         </article>
 

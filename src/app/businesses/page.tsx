@@ -69,8 +69,10 @@ export default async function BusinessesPage() {
         <Link href="/docs" className="rounded-xl border border-[var(--line)] bg-black/20 px-4 py-2.5 text-sm">
           Docs
         </Link>
+        <Link href="/admin/routing" className="rounded-xl border border-[var(--line)] bg-black/20 px-4 py-2.5 text-sm">
+          Admin Console
+        </Link>
       </div>
     </main>
   );
 }
-
