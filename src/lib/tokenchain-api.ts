@@ -41,9 +41,43 @@ export type MerchantAllocationItem = {
 };
 
 type MerchantAllocationResponse = {
-  ok: boolean;
-  count: number;
-  items: MerchantAllocationItem[];
+	ok: boolean;
+	count: number;
+	items: MerchantAllocationItem[];
+};
+
+export type IBCChannelItem = {
+	port_id: string;
+	channel_id: string;
+	state: string;
+	ordering: string;
+	counterparty_port_id: string;
+	counterparty_channel_id: string;
+	connection_id: string;
+	version: string;
+};
+
+type IBCChannelsResponse = {
+	ok: boolean;
+	count: number;
+	open_count: number;
+	items: IBCChannelItem[];
+};
+
+export type RelayerStatus = {
+	ok: boolean;
+	relayer_service: string;
+	service_active?: string;
+	service_enabled?: string;
+	hermes_binary: string;
+	hermes_config: string;
+	hermes_config_exists?: boolean;
+	hermes_health_ok?: boolean;
+	hermes_health_output?: string;
+	hermes_health_error?: string;
+	service_active_error?: string;
+	service_enabled_error?: string;
+	checked_at?: string;
 };
 
 export async function getLiveStatus(): Promise<LiveStatus | null> {
@@ -87,5 +121,30 @@ export async function getMerchantAllocations(
     return body.items;
   } catch {
     return [];
-  }
+	}
+}
+
+export async function getIBCChannels(limit: number, portID?: string): Promise<IBCChannelItem[]> {
+	try {
+		const params = new URLSearchParams();
+		params.set("limit", String(limit));
+		if (portID) params.set("port_id", portID);
+		const res = await fetch(`${API_BASE}/v1/ibc/channels?${params.toString()}`, { cache: "no-store" });
+		if (!res.ok) return [];
+		const body = (await res.json()) as IBCChannelsResponse;
+		if (!body.ok || !Array.isArray(body.items)) return [];
+		return body.items;
+	} catch {
+		return [];
+	}
+}
+
+export async function getRelayerStatus(): Promise<RelayerStatus | null> {
+	try {
+		const res = await fetch(`${API_BASE}/v1/ibc/relayer-status`, { cache: "no-store" });
+		if (!res.ok) return null;
+		return (await res.json()) as RelayerStatus;
+	} catch {
+		return null;
+	}
 }

@@ -1,5 +1,12 @@
 import Link from "next/link";
-import { API_BASE, getLiveStatus, getMerchantAllocations, getMerchantRouting } from "@/lib/tokenchain-api";
+import {
+  API_BASE,
+  getIBCChannels,
+  getLiveStatus,
+  getMerchantAllocations,
+  getMerchantRouting,
+  getRelayerStatus,
+} from "@/lib/tokenchain-api";
 
 const links = {
   wallet: "https://tokentap.ca",
@@ -19,6 +26,8 @@ export default async function Home() {
   const live = await getLiveStatus();
   const routing = await getMerchantRouting(4);
   const allocations = await getMerchantAllocations(5);
+  const ibcChannels = await getIBCChannels(10, "transfer");
+  const relayer = await getRelayerStatus();
   const stats = [
     ["Network", live?.rpc_network ?? "tokenchain-testnet-1"],
     ["Height", live?.latest_block_height ?? "n/a"],
@@ -183,6 +192,43 @@ export default async function Home() {
           ) : (
             <p className="mt-5 text-sm text-[var(--muted)]">Allocation ledger feed is temporarily unavailable.</p>
           )}
+        </section>
+
+        <section className="mt-10 rounded-3xl border border-[var(--line)] bg-[var(--panel)]/70 p-8">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <h2 className="display text-3xl text-[var(--gold-soft)]">IBC + Relayer Status</h2>
+              <p className="mt-2 text-sm text-[var(--muted)]">
+                Day-1 interchain readiness for transfer channels and relay service health.
+              </p>
+            </div>
+            <Link
+              href={`${links.api}/v1/ibc/relayer-status`}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-xl border border-[var(--line)] bg-black/20 px-3 py-2 text-xs text-[var(--muted)]"
+            >
+              Raw API
+            </Link>
+          </div>
+
+          <div className="mt-5 grid gap-4 md:grid-cols-3">
+            <article className="rounded-2xl border border-[var(--line)] bg-black/20 p-5">
+              <p className="text-xs uppercase tracking-[0.14em] text-[var(--muted)]">Relayer Service</p>
+              <p className="mt-2 text-sm font-semibold text-white">{relayer?.service_active ?? "unknown"}</p>
+              <p className="mt-1 text-xs text-[var(--muted)]">{relayer?.service_enabled ?? "unknown"}</p>
+            </article>
+            <article className="rounded-2xl border border-[var(--line)] bg-black/20 p-5">
+              <p className="text-xs uppercase tracking-[0.14em] text-[var(--muted)]">Hermes Health</p>
+              <p className="mt-2 text-sm font-semibold text-white">{relayer?.hermes_health_ok ? "ok" : "not ready"}</p>
+              <p className="mt-1 text-xs text-[var(--muted)]">{relayer?.hermes_config_exists ? "config found" : "missing config"}</p>
+            </article>
+            <article className="rounded-2xl border border-[var(--line)] bg-black/20 p-5">
+              <p className="text-xs uppercase tracking-[0.14em] text-[var(--muted)]">Transfer Channels</p>
+              <p className="mt-2 text-sm font-semibold text-white">{ibcChannels.length}</p>
+              <p className="mt-1 text-xs text-[var(--muted)]">port: transfer</p>
+            </article>
+          </div>
         </section>
 
         <section className="mt-10 rounded-3xl border border-[var(--line)] bg-[var(--panel)]/70 p-8">
