@@ -3,15 +3,9 @@ import Link from "next/link";
 const links = {
   wallet: "https://tokentap.ca",
   explorer: "https://explorer.tokenchain.tokentap.ca",
-  api: "https://api.tokenchain.tokentap.ca",
-};
-
-const stats = [
-  ["Network", "tokenchain-testnet-1"],
-  ["Base Denom", "utoken (TOKEN)"],
-  ["Explorer", "Bootstrap Host"],
-  ["Ops", "IBC + CosmWasm"],
-] as const;
+  api: "https://api.testnet.tokenchain.tokentap.ca",
+  faucet: "https://faucet.testnet.tokenchain.tokentap.ca",
+} as const;
 
 const tokens = [
   ["token", "$TOKEN", "Network asset for fees and security"],
@@ -20,7 +14,32 @@ const tokens = [
   ["grain", "$GRAIN", "Community wealth rail"],
 ] as const;
 
-export default function Home() {
+type LiveStatus = {
+  ok: boolean;
+  latest_block_height: string;
+  catching_up: boolean;
+  rpc_network: string;
+};
+
+async function getLiveStatus(): Promise<LiveStatus | null> {
+  try {
+    const res = await fetch(`${links.api}/v1/status`, { cache: "no-store" });
+    if (!res.ok) return null;
+    return (await res.json()) as LiveStatus;
+  } catch {
+    return null;
+  }
+}
+
+export default async function Home() {
+  const live = await getLiveStatus();
+  const stats = [
+    ["Network", live?.rpc_network ?? "tokenchain-testnet-1"],
+    ["Height", live?.latest_block_height ?? "n/a"],
+    ["Sync", live ? (live.catching_up ? "Syncing" : "Online") : "Unknown"],
+    ["Base Denom", "utoken (TOKEN)"],
+  ] as const;
+
   return (
     <div className="min-h-screen grid-haze">
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
@@ -71,6 +90,14 @@ export default function Home() {
               className="rounded-xl border border-[var(--line)] bg-black/20 px-4 py-2.5 text-sm"
             >
               View Explorer
+            </Link>
+            <Link
+              href={links.faucet}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-xl border border-[var(--line)] bg-black/20 px-4 py-2.5 text-sm"
+            >
+              Testnet Faucet
             </Link>
           </div>
         </section>

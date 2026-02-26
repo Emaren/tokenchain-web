@@ -6,6 +6,7 @@ const endpoints = [
   ["REST", "https://rest.testnet.tokenchain.tokentap.ca"],
   ["gRPC", "grpc.testnet.tokenchain.tokentap.ca:443"],
   ["API", "https://api.testnet.tokenchain.tokentap.ca"],
+  ["Faucet", "https://faucet.testnet.tokenchain.tokentap.ca"],
   ["Seed", "seed.testnet.tokenchain.tokentap.ca:26656"],
 ];
 
@@ -41,6 +42,15 @@ export default function DocsPage() {
               </li>
             ))}
           </ul>
+        </article>
+
+        <article className="rounded-2xl border border-[var(--line)] bg-[var(--panel)]/70 p-5">
+          <p className="text-sm uppercase tracking-[0.12em] text-[var(--muted)]">Faucet Request</p>
+          <pre className="mt-3 overflow-x-auto rounded-xl border border-[var(--line)] bg-black/30 p-3 text-xs text-[var(--gold)]">
+{`curl -X POST https://faucet.testnet.tokenchain.tokentap.ca/v1/faucet/request \\
+  -H 'content-type: application/json' \\
+  -d '{"address":"tokenchain1..."}'`}
+          </pre>
         </article>
       </section>
     </main>
