@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { API_BASE, getLiveStatus, getMerchantRouting } from "@/lib/tokenchain-api";
+import { API_BASE, getLiveStatus, getMerchantAllocations, getMerchantRouting } from "@/lib/tokenchain-api";
 
 const links = {
   wallet: "https://tokentap.ca",
@@ -18,6 +18,7 @@ const tokens = [
 export default async function Home() {
   const live = await getLiveStatus();
   const routing = await getMerchantRouting(4);
+  const allocations = await getMerchantAllocations(5);
   const stats = [
     ["Network", live?.rpc_network ?? "tokenchain-testnet-1"],
     ["Height", live?.latest_block_height ?? "n/a"],
@@ -133,6 +134,54 @@ export default async function Home() {
             </div>
           ) : (
             <p className="mt-5 text-sm text-[var(--muted)]">Routing feed is temporarily unavailable.</p>
+          )}
+        </section>
+
+        <section className="mt-10 rounded-3xl border border-[var(--line)] bg-[var(--panel)]/70 p-8">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <h2 className="display text-3xl text-[var(--gold-soft)]">Latest Merchant Allocations</h2>
+              <p className="mt-2 text-sm text-[var(--muted)]">
+                On-chain daily Bucket C ledger records used for merchant incentive distribution.
+              </p>
+            </div>
+            <Link
+              href={`${links.api}/v1/loyalty/merchant-allocations`}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-xl border border-[var(--line)] bg-black/20 px-3 py-2 text-xs text-[var(--muted)]"
+            >
+              Raw API
+            </Link>
+          </div>
+
+          {allocations.length > 0 ? (
+            <div className="mt-4 overflow-x-auto">
+              <table className="min-w-full text-left text-sm">
+                <thead className="text-[var(--muted)]">
+                  <tr>
+                    <th className="py-2 pr-4">Date</th>
+                    <th className="py-2 pr-4">Denom</th>
+                    <th className="py-2 pr-4">Bucket C</th>
+                    <th className="py-2 pr-4">Stakers</th>
+                    <th className="py-2 pr-4">Treasury</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {allocations.map((item) => (
+                    <tr key={item.key} className="border-t border-[var(--line)]">
+                      <td className="py-2 pr-4 text-white">{item.date}</td>
+                      <td className="py-2 pr-4 text-[var(--muted)] break-all">{item.denom}</td>
+                      <td className="py-2 pr-4 text-white">{item.bucket_c_amount}</td>
+                      <td className="py-2 pr-4 text-white">{item.stakers_amount}</td>
+                      <td className="py-2 pr-4 text-white">{item.treasury_amount}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p className="mt-5 text-sm text-[var(--muted)]">Allocation ledger feed is temporarily unavailable.</p>
           )}
         </section>
 

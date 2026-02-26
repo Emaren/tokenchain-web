@@ -24,8 +24,12 @@ export default async function AdminRoutingPage() {
             Open API endpoints
           </Link>
         </p>
+        <p className="mt-2">
+          <Link href="/admin/allocations" className="text-[var(--gold)]">
+            Go to allocation console
+          </Link>
+        </p>
       </div>
     </main>
   );
 }
-

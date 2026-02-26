@@ -60,9 +60,21 @@ export default function DocsPage() {
               </Link>
             </li>
             <li>
+              <span className="text-white">Merchant allocations:</span>{" "}
+              <Link href="https://api.testnet.tokenchain.tokentap.ca/v1/loyalty/merchant-allocations" target="_blank" rel="noreferrer" className="text-[var(--gold)]">
+                /v1/loyalty/merchant-allocations
+              </Link>
+            </li>
+            <li>
               <span className="text-white">Admin routing update:</span>{" "}
               <Link href="/admin/routing" className="text-[var(--gold)]">
                 /admin/routing
+              </Link>
+            </li>
+            <li>
+              <span className="text-white">Admin allocation record:</span>{" "}
+              <Link href="/admin/allocations" className="text-[var(--gold)]">
+                /admin/allocations
               </Link>
             </li>
           </ul>

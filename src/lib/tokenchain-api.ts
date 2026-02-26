@@ -26,6 +26,26 @@ type MerchantRoutingResponse = {
   items: MerchantRoutingItem[];
 };
 
+export type MerchantAllocationItem = {
+  key: string;
+  date: string;
+  denom: string;
+  activity_score: number;
+  bucket_c_amount: number;
+  stakers_amount: number;
+  treasury_amount: number;
+  merchant_incentive_stakers_bps: number;
+  merchant_incentive_treasury_bps: number;
+  merchant_incentive_stakers_pct: string;
+  merchant_incentive_treasury_pct: string;
+};
+
+type MerchantAllocationResponse = {
+  ok: boolean;
+  count: number;
+  items: MerchantAllocationItem[];
+};
+
 export async function getLiveStatus(): Promise<LiveStatus | null> {
   try {
     const res = await fetch(`${API_BASE}/v1/status`, { cache: "no-store" });
@@ -48,3 +68,24 @@ export async function getMerchantRouting(limit: number): Promise<MerchantRouting
   }
 }
 
+export async function getMerchantAllocations(
+  limit: number,
+  filters?: { date?: string; denom?: string },
+): Promise<MerchantAllocationItem[]> {
+  try {
+    const params = new URLSearchParams();
+    params.set("limit", String(limit));
+    if (filters?.date) params.set("date", filters.date);
+    if (filters?.denom) params.set("denom", filters.denom);
+
+    const res = await fetch(`${API_BASE}/v1/loyalty/merchant-allocations?${params.toString()}`, {
+      cache: "no-store",
+    });
+    if (!res.ok) return [];
+    const body = (await res.json()) as MerchantAllocationResponse;
+    if (!body.ok || !Array.isArray(body.items)) return [];
+    return body.items;
+  } catch {
+    return [];
+  }
+}
